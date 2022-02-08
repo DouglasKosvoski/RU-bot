@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 import requests
+import json
 
 def main():
     url = 'https://www.uffs.edu.br/campi/chapeco/restaurante_universitario'
@@ -13,25 +14,20 @@ def main():
                 vrau.append(td.find('p').text)
 
 
-    json = {}
+    xesque = {}
     for day in range(5):
-        temp = {}
+        asd = []
         for i in range(day, len(vrau), 5):
             if i == day:
-                json[vrau[i]] = {}
+                xesque[vrau[i]] = {}
             else:
                 if len(vrau[i]) >= 3:
-                    print(1)
-                    # temp[list(json.keys())[day]] = 33
-                    # print()
-                    # print(list(json.items()))
-                    pass
-        # json[list(json.keys())[day]] = temp
+                    asd.append(vrau[i])
 
+        xesque[list(xesque.keys())[day]] = asd
 
-    print()
-    print(json)
-
+    with open('output.json', 'w+') as f:
+        json.dump(xesque, f, indent=2)
 
 if __name__ == '__main__':
     main()

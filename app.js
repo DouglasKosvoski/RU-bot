@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 var Discord = require('discord.io');
 var logger = require('winston');
 var auth = require('./auth.json');
@@ -37,13 +39,27 @@ bot.on('message', function (user, userID, channelID, message, evt) {
           message: 'Pong!'
         });
         break;
+
       case 'menu':
-        bot.sendMessage({
-          to: channelID,
-          message: 'comi teu cu arrombado!'
+        fs.readFile('./output.json', 'utf8', (err, data) => {
+          if (err) {
+            bot.sendMessage({
+              to: channelID,
+              message: "Error Reading Data :("
+            });
+            return;
+          }
+          else {
+            // parse JSON string to JSON object
+            const asd = JSON.parse(data);
+            const xasd = JSON.stringify(asd);
+            bot.sendMessage({
+              to: channelID,
+              message: xasd
+            });
+          }
         });
         break;
-      // Just add any case commands if you want to.
     }
   }
 });
