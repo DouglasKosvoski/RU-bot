@@ -5,6 +5,7 @@ lib64
 node_modules/
 package-lock.json
 pyvenv.cfg
+.env
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
