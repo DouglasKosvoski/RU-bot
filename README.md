@@ -1,2 +1,2 @@
 # RU-bot
-Bot para pegar o cardápio da semana do Restaurante Universitário (Chapecó)
+Discord Bot para pegar o cardápio da semana do Restaurante Universitário (Chapecó)
