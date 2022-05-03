@@ -28,32 +28,46 @@ async def on_ready():
 async def on_message(message):
     if message.author == client.user:
         return
+    elif message.content.startswith("!") == False:
+        return
+    else:
+        msg = message.content[1::]
 
-    if message.content in ['!link', '!invite']:
+    if msg in ['link', 'invite']:
         await message.channel.send(INVITE_LINK)
 
-    elif message.content in ['!salve', '!ola', '!oi']:
-        await message.channel.send("Salve")
+    elif msg in ['ru', 'site', 'web']:
+        await message.channel.send("https://www.uffs.edu.br/campi/chapeco/restaurante_universitario")
 
-    elif message.content in ["!autor", "!author"]:
-        await message.channel.send("`Douglas Kosvoski`")
+    elif msg in ["autor", "author", "criador"]:
+        await message.channel.send("`Douglas Kosvoski - 2022.1`")
 
-    elif message.content in ["!codigo", "!repo", "!repositorio"]:
-        await message.channel.send("`https://github.com/DouglasKosvoski/RU-bot`")
+    elif msg in ["code", "codigo", "repo", "repositorio"]:
+        await message.channel.send("https://github.com/DouglasKosvoski/RU-bot")
 
-    elif message.content in ['!menu', '!cardapio', '!cardápio']:
+    elif msg in ['menu', 'cardapio']:
         data = get_content(URL)
         for key, value in data.items():
             temp = ""
+            count = 0
             for i in value:
+                if count == 0:
+                    temp += "--- Saladas ---\n"
+                elif count == 3:
+                    temp += "\n--- Pratos Principais ---\n"
+                elif count == len(value)-1:
+                    temp += "\n--- Sobremesa ---\n"
+
                 temp += i + "\n"
+                count += 1
+
             temp = key + "\n```\n" + temp + "```"
             await message.channel.send(":fork_knife_plate: " + temp)
 
-    elif message.content in ['!cmd', '!cmds', "!commands", "!comandos"]:
-        cmds = ['!link', '!invite', '!salve', '!ola', '!oi', '!menu',
-                '!cardapio', '!cardápio', "!autor", "!author", "!codigo",
-                "!repo", "!repositorio"]
+    elif msg in ['cmd', 'cmds', "commands", "comandos", "help"]:
+        cmds = [
+            'link', 'invite', 'ru', 'site', 'web', "autor", "author", "criador", "code", "codigo", "repo", "repositorio", 'menu', 'cardapio'
+        ]
         temp = ""
         for i in cmds:
             temp += i + "\n"
@@ -63,30 +77,31 @@ async def on_message(message):
 def get_content(url):
     html = requests.get(url).text
     soup = BeautifulSoup(html, 'html.parser')
-    vrau = []
+    data = []
 
     for table in soup.find_all('tbody'):
         for tr in table.find_all('tr'):
             for td in tr.find_all('td'):
-                vrau.append(td.find('p').text)
+                data.append(td.find('p').text)
 
-    xesque = {}
+    week_data = {}
     for day in range(5):
-        asd = []
-        for i in range(day, len(vrau), 5):
+        foods = []
+        for i in range(day, len(data), 5):
             if i == day:
-                xesque[vrau[i]] = {}
+                week_data[data[i]] = {}
             else:
-                if len(vrau[i]) >= 3:
-                    asd.append(vrau[i])
+                if len(data[i]) >= 3:
+                    foods.append(data[i])
 
-        xesque[list(xesque.keys())[day]] = asd
+        if len(foods) > 10:
+            foods = foods[11::]
+        week_data[list(week_data.keys())[day]] = foods
 
-    return xesque
+    return week_data
 
 def main():
     client.run(TOKEN)
-
 
 if __name__ == '__main__':
     main()
